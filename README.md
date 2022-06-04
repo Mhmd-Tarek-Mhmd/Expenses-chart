@@ -5,4 +5,4 @@ This is a solution to the [Expenses chart component challenge on Frontend Mentor
 ## Links
 
 - Live Site [URL](https://mhmd-tarek-mhmd.github.io/Expenses-chart)
-- Solution [URL](https://www.frontendmentor.io/solutions/expenses-chart-)
+- Solution [URL](https://www.frontendmentor.io/solutions/expenses-chart-HG3kwEOEtj)
