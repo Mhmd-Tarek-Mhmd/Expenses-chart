@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses chart component</title>
+  </head>
+  <body>
+    <main>
+      <article class="card">
+        <!-- [1] Card Header -->
+        <div class="card-header">
+          <h1>
+            <small>My balance</small>
+            <p>$921.48</p>
+          </h1>
+
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            width="72"
+            height="48"
+            viewBox="0 0 72 48"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <circle fill="#382314" cx="48" cy="24" r="24" />
+              <circle stroke="#FFF" stroke-width="2" cx="24" cy="24" r="23" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- [2] Card Body -->
+        <div class="card-body">
+          <figure class="card-image">
+            <figcaption>Spending - Last 7 days</figcaption>
+            <div id="chart" aria-labelledby="chart-label" role="img"></div>
+          </figure>
+
+          <hr class="line" />
+
+          <div class="info">
+            <div class="total">
+              <small>Total this month</small>
+              <strong>$478.33</strong>
+            </div>
+
+            <div class="last">
+              <strong>+2.4%</strong>
+              <small>from last month</small>
+            </div>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      (function () {
+        const chartCol = (maxAmount, i, { day, amount }) => `
+          <div
+            aria-hidden="true"
+            data-day=${day}
+            data-amount=${amount}
+            class="bar ${amount === maxAmount ? "max" : ""}"
+            style="height: ${Math.ceil(amount * 2.86)}px;"
+          ></div>
+        `;
+
+        const chartLabel = (data, cb) => {
+          const days = [];
+          const amounts = [];
+
+          data.forEach(({ day, amount }) => {
+            days.push(`<td>${day}</td>`);
+            amounts.push(`<td>$${amount}</td>`);
+          });
+
+          return `
+            <table id="chart-label" aria-hidden="true" style="display: none;">
+              <thead>
+                <tr>${days.join("")}</tr>
+              </thead>
+
+              <tbody>
+                <tr>${amounts.join("")}</tr>
+              </tbody>
+            </table>
+          `;
+        };
+
+        fetch("./data.json")
+          .then((data) => data.json())
+          .then((data) => {
+            let maxAmount = 0;
+            const chart = document.getElementById("chart");
+
+            // [1] Get largest spending
+            data.forEach(({ day, amount }, i) => {
+              if (amount > maxAmount) maxAmount = amount;
+            });
+
+            // [2] Add chart columns
+            data.forEach(
+              (d, i) => (chart.innerHTML += chartCol(maxAmount, i, d))
+            );
+
+            // [3] Add chart label
+            chart.innerHTML += chartLabel(data);
+          });
+      })();
+    </script>
+  </body>
+</html>
